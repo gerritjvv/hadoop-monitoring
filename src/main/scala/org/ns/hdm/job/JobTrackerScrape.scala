@@ -15,16 +15,13 @@ import scala.util.matching.Regex.Match
 object JobTrackerScrape {
   
   val heap_regex = """(\d*\.\d*)""".r
-  
-  //Cluster Summary (Heap Size is 54.5 MB/888.94 MB)
-/*
- * 	val (m1:Float, m2:Float) = r.findAllMatchIn(p.text) match {
-             case m:Iterator[Match] => (m.next().toFloat, m.next().toFloat)
-             case _ => (-1, -1)
- * 
- */
+
   def parse(file:File):Document = Jsoup.parse(file, "UTF-8", "http://test.com")
   
+  /**
+   * Returns a tuple of (memory-used, total-memory),
+   * if no matchs is found (-1.0, -1.0) is returned
+   */
   def heapSize(doc:Document): (Float, Float) =  doc.select("h2:matches(Heap Size)") match {  
     					case e:Elements =>  heap_regex.findAllMatchIn(e.text()) match{
     					  						case i:Iterator[Match] => (i.next().group(0).toFloat, i.next().group(0).toFloat)
@@ -34,6 +31,14 @@ object JobTrackerScrape {
     					case _ => (-1.0F, -1.0F)
   					   }
  
+  
+  /**
+   * Returns blacklisted nodes, if not match was found minus one is returned
+   */
+  def blacklisted(doc:Document): Int = doc.select("a[href*=blacklisted]") match {
+    											case m:Elements => m.text().toInt
+    											case _ => -1
+  										}
   
   
 }

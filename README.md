@@ -20,7 +20,7 @@ NamenodeScrape
 
 ```scala
 
-   val doc = NamenodeScrape.parse(new File("test/resources/dfshealth.jsp"))
+   val doc = NamenodeScrape.parse(new File("http://localhost:50070"))
    NamenodeScrape.heapSize(doc) // returns (Float, Float) => (used, total)
    NamenodeScrape.statusMap(doc) /* returns Map[String, Float) e.g 
    								Map(number-of-under-replicated-blocks -> 0.0, 

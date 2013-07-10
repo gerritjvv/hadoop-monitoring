@@ -5,6 +5,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import scala.util.matching.Regex.Match
+import java.net.URL
 
 /**
  * Scrape the Jobtracker page for information
@@ -17,10 +18,11 @@ object JobTrackerScrape {
   val heap_regex = """(\d*\.\d*)""".r
 
   def parse(file:File):Document = Jsoup.parse(file, "UTF-8", "http://test.com")
+  def parse(url:String):Document = Jsoup.connect(url).get()
   
   /**
    * Returns a tuple of (memory-used, total-memory),
-   * if no matchs is found (-1.0, -1.0) is returned
+   * if no matches is found (-1.0, -1.0) is returned
    */
   def heapSize(doc:Document): (Float, Float) =  doc.select("h2:matches(Heap Size)") match {  
     					case e:Elements =>  heap_regex.findAllMatchIn(e.text()) match{
